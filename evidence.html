@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شواهد المستوى - ابتدائية آمنة بنت الأرقم</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- ========================================== -->
+    <!-- صفحة شواهد المستوى المستقلة مع الفلاتر    -->
+    <!-- ========================================== -->
+    <section class="indicators-section">
+        <div class="section-container">
+            
+            <!-- شريط المسار والتنقل العلوي (Breadcrumb) -->
+            <div class="portal-nav-bar">
+                <div class="breadcrumb-trail">
+                    <a href="index.html" class="breadcrumb-link">المؤشرات</a>
+                    <span class="breadcrumb-separator">←</span>
+                    <a id="breadcrumbDomainLink" href="#" class="breadcrumb-link">اسم القسم</a>
+                    <span class="breadcrumb-separator">←</span>
+                    <span id="breadcrumbLevelCode" class="breadcrumb-current">المستوى</span>
+                </div>
+                <div class="user-auth-bar">
+                    <span class="auth-status-dot"></span>
+                    <span id="userRoleTitleText" class="auth-role-name">وضع التصفح العام (زائر)</span>
+                    <button id="authModalTriggerBtn" class="login-action-btn">تسجيل دخول المسؤولة 🔑</button>
+                </div>
+            </div>
+
+            <!-- هيدر صفحة الشواهد وزر العودة الصريح لمستويات القسم -->
+            <div class="stage-header-box">
+                <div class="stage-header-info">
+                    <button id="backToLevelsBtn" class="stage-back-btn">← العودة لقائمة المستويات</button>
+                    <div>
+                        <span id="currentLevelCodeBadge" class="level-code-tag"></span>
+                        <h3 id="currentLevelDescHeading" class="stage-title-text" style="margin-top:0.4rem;"></h3>
+                    </div>
+                </div>
+                <!-- تم إزالة زر الرفع القديم من هنا ليحل محله تصميم مساحة الرفع في الشبكة -->
+            </div>
+
+            <!-- أزرار تبويب الفلاتر التفاعلية (تفلتر الشواهد فوراً دون إعادة تحميل) -->
+            <div class="evidence-filter-tabs">
+                <button class="filter-tab-btn active" data-filter="all" onclick="setEvidenceFilter('all')">
+                    الكل <span class="filter-count-badge" id="countFilterAll">0</span>
+                </button>
+                <button class="filter-tab-btn" data-filter="image" onclick="setEvidenceFilter('image')">
+                    🖼️ الصور <span class="filter-count-badge" id="countFilterImage">0</span>
+                </button>
+                <button class="filter-tab-btn" data-filter="video" onclick="setEvidenceFilter('video')">
+                    🎥 المقاطع <span class="filter-count-badge" id="countFilterVideo">0</span>
+                </button>
+                <button class="filter-tab-btn" data-filter="doc" onclick="setEvidenceFilter('doc')">
+                    📄 ملفات PDF والمستندات <span class="filter-count-badge" id="countFilterDoc">0</span>
+                </button>
+            </div>
+
+            <!-- شبكة عرض الشواهد المصنفة للمستوى المحدد حصراً -->
+            <div id="evidenceDisplayGrid" class="evidence-display-grid">
+                <!-- يتم تعبئة مساحة الرفع الثابتة والشواهد المرفوعة ديناميكياً -->
+            </div>
+
+        </div>
+    </section>
+
+<!-- نافذة تسجيل الدخول للمسؤولة -->
+<div id="loginAuthModal" class="app-modal-overlay">
+    <div class="app-modal-card">
+        <button
+            type="button"
+            class="modal-close-icon"
+            onclick="closeLoginAuthModal()"
+            aria-label="إغلاق"
+        >&times;</button>
+
+        <h3 class="modal-card-title">تسجيل دخول مسؤولة القسم</h3>
+        <p class="modal-card-sub">
+            أدخلي اسم المستخدم وكلمة المرور.
+        </p>
+
+        <form id="appLoginForm">
+            <div class="modal-form-group">
+                <label class="modal-label" for="usernameField">
+                    اسم المستخدم
+                </label>
+                <input
+                    type="text"
+                    id="usernameField"
+                    class="modal-input-field"
+                    placeholder="أدخلي اسم المستخدم"
+                    autocomplete="username"
+                    required
+                />
+            </div>
+
+            <div class="modal-form-group">
+                <label class="modal-label" for="passCodeField">
+                    كلمة المرور
+                </label>
+                <input
+                    type="password"
+                    id="passCodeField"
+                    class="modal-input-field"
+                    placeholder="أدخلي كلمة المرور"
+                    autocomplete="current-password"
+                    required
+                />
+            </div>
+
+            <p id="loginErrorMessage" role="alert" hidden></p>
+
+            <button type="submit" class="modal-submit-btn">
+                تسجيل الدخول
+            </button>
+        </form>
+    </div>
+</div>
+
+
+    <!-- نافذة تعديل الشاهد المحسنة (بدون استخدام prompt أو alert) -->
+    <div id="evidenceFormModal" class="app-modal-overlay">
+        <div class="app-modal-card">
+            <button class="modal-close-icon" onclick="closeEvidenceFormModal()">&times;</button>
+            <h3 id="formModalTitle" class="modal-card-title">تعديل الشاهد</h3>
+            
+            <form id="appEvidenceForm">
+                <input type="hidden" id="formEditingEvidenceId" />
+
+                <div class="modal-form-group">
+                    <label class="modal-label">عنوان الشاهد أو التسمية</label>
+                    <input type="text" id="evTitleField" class="modal-input-field" placeholder="مثال: الخطة التشغيلية للمدرسة" required />
+                </div>
+
+                <div class="modal-form-group">
+                    <label class="modal-label">نوع الشاهد</label>
+                    <select id="evTypeField" class="modal-input-field" required>
+                        <option value="doc">📄 ملف PDF / مستند</option>
+                        <option value="image">🖼️ صورة</option>
+                        <option value="video">🎥 مقطع فيديو</option>
+                    </select>
+                </div>
+
+                <div class="modal-form-group">
+                    <label class="modal-label">تعليق / ملاحظات المسؤولة (اختياري)</label>
+                    <textarea id="evCommentField" class="modal-input-field" rows="3" placeholder="اكتبي تعليقاً أو إيضاحاً للجهة المقيّمة..."></textarea>
+                </div>
+
+                <!-- أزرار التحكم الثلاثة المحدثة -->
+               <div class="modal-actions-flex" style="display: flex; gap: 10px; margin-top: 1.5rem;">
+    <button type="submit" class="modal-submit-btn" style="flex: 2;">حفظ التعديلات</button>
+    <button type="button" class="modal-cancel-btn" onclick="closeEvidenceFormModal()" style="flex: 1; background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; font-weight: 700; cursor: pointer;">إلغاء</button>
+</div>
+            </form>
+        </div>
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

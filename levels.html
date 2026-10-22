@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مستويات القسم </title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- ========================================== -->
+    <!-- صفحة مستويات القسم المستقلة                -->
+    <!-- ========================================== -->
+    <section class="indicators-section">
+        <div class="section-container">
+            
+            <!-- شريط المسار والتنقل العلوي -->
+            <div class="portal-nav-bar">
+                <div class="breadcrumb-trail">
+                    <a href="index.html" class="breadcrumb-link">الرئيسية (الأقسام)</a>
+                    <span class="breadcrumb-separator">←</span>
+                    <span id="breadcrumbDomainName" class="breadcrumb-current">اسم القسم</span>
+                </div>
+                <div class="user-auth-bar">
+                    <span class="auth-status-dot"></span>
+                    <span id="userRoleTitleText" class="auth-role-name">وضع التصفح العام (زائر)</span>
+                    <button id="authModalTriggerBtn" class="login-action-btn">تسجيل دخول المسؤولة 🔑</button>
+                </div>
+            </div>
+
+            <!-- هيدر الصفحة وزر العودة الصريح للرئيسية -->
+            <div class="stage-header-box">
+                <div class="stage-header-info">
+                    <button class="stage-back-btn" onclick="location.href='index.html'">← العودة لصفحة الأقسام</button>
+                    <h3 id="currentSelectedDomainTitle" class="stage-title-text">مستويات القسم</h3>
+                </div>
+            </div>
+
+            <!-- شبكة عرض المستويات الخاصة بالقسم المختار حصراً -->
+            <div id="levelsGridContainer" class="levels-main-grid">
+                <!-- يتم تعبئة مستويات القسم تلقائياً بحسب المعرف الممرر في الرابط -->
+            </div>
+
+        </div>
+    </section>
+
+
+<div id="loginAuthModal" class="app-modal-overlay">
+    <div class="app-modal-card">
+        <button type="button" class="modal-close-icon"
+            onclick="closeLoginAuthModal()">&times;</button>
+
+        <h3 class="modal-card-title">تسجيل دخول مسؤولة القسم</h3>
+        <p class="modal-card-sub">أدخلي اسم المستخدم وكلمة المرور.</p>
+
+        <form id="appLoginForm">
+            <div class="modal-form-group">
+                <label class="modal-label" for="usernameField">اسم المستخدم</label>
+                <input type="text" id="usernameField"
+                    class="modal-input-field"
+                    placeholder="أدخلي اسم المستخدم"
+                    autocomplete="username" required>
+            </div>
+
+            <div class="modal-form-group">
+                <label class="modal-label" for="passCodeField">كلمة المرور</label>
+                <input type="password" id="passCodeField"
+                    class="modal-input-field"
+                    placeholder="أدخلي كلمة المرور"
+                    autocomplete="current-password" required>
+            </div>
+
+            <p id="loginErrorMessage" role="alert" hidden></p>
+
+            <button type="submit" class="modal-submit-btn">
+                تسجيل الدخول
+            </button>
+        </form>
+    </div>
+</div>
+
+    <!-- نافذة رفع وتعديل الشواهد للمسؤولة -->
+    <div id="evidenceFormModal" class="app-modal-overlay">
+        <div class="app-modal-card">
+            <button class="modal-close-icon" onclick="closeEvidenceFormModal()">&times;</button>
+            <h3 id="formModalTitle" class="modal-card-title">رفع شاهد جديد</h3>
+            <form id="appEvidenceForm">
+                <input type="hidden" id="formEditingEvidenceId" />
+                <div class="modal-form-group">
+                    <label class="modal-label">عنوان الشاهد أو التسمية</label>
+                    <input type="text" id="evTitleField" class="modal-input-field" required placeholder="مثال: الخطة التشغيلية" />
+                </div>
+                <div class="modal-form-group">
+                    <label class="modal-label">نوع الشاهد</label>
+                    <select id="evTypeField" class="modal-input-field" required>
+                        <option value="doc">📄 ملف PDF / مستند</option>
+                        <option value="image">🖼️ صورة</option>
+                        <option value="video">🎥 مقطع فيديو</option>
+                    </select>
+                </div>
+                <div class="modal-form-group">
+                    <label class="modal-label">اختر الملف من جهازك (اللابتوب)</label>
+                    <input type="file" id="evFileField" class="modal-input-field" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.mp4,.mov" />
+                </div>
+                <div class="modal-form-group">
+                    <label class="modal-label">تعليق / ملاحظات المسؤولة (اختياري)</label>
+                    <textarea id="evCommentField" class="modal-input-field" rows="3" placeholder="اكتبي تعليقاً اختياريّاً..."></textarea>
+                </div>
+                <button type="submit" class="modal-submit-btn">حفظ وتوثيق الشاهد</button>
+            </form>
+        </div>
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
